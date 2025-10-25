@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1759872839 source:c:\users\valen\onedrive\escritorio\edi3\recursividad2\main.c
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+	<limits.h>
+

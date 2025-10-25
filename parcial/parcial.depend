@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1749688489 source:c:\users\valen\onedrive\escritorio\edi3\parcial\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

@@ -1,0 +1,162 @@
+-------------------------------------------------------------------
+int cuentaRegistrosArchivoFtell(char nombre[DIM])
+{
+    int cantidad =0;
+    FILE* arch= fopen(nombreArchivo,"rb"); // no funciona si abro con ab o a+b
+
+    if(arch != NULL)
+    {
+        fseek(arch,0, SEEK_END); // me posiciono al final del archivo
+
+        cantidad = ftell(arch)/ sizeof(alumno);
+
+        fclose(arch);
+    }
+    return cantidad;
+}
+--------------------------------------------------------------------- 
+
+void mostrarTalRegistro(char nombre[DIM], int registro){
+    int cant = cuentaRegistrosArchivoFtell(nombre);
+
+    if(pos =< cant){
+
+        FILE *arch = fopen(nombre,"rb");
+
+        if(arch != NULL){
+
+            stAlumno aux;
+
+            fseek(arch, sizeof(stAlumno) * (registro - 1),SEEK_SET);
+
+            fread(&aux,sizeof(stAlumno),1,arch);
+
+            mostrarUnAlumno(aux);
+
+            fclose(arch);
+        }
+    }
+}
+
+--------------------------------------------------------------------- 
+
+ void modificarAlumnoAeleccion(char archivo[], int pos)
+{
+    FILE* archi = fopen(archivo, "r+b"); // abrir en modo lectura/escritura binaria
+
+    if (archi != NULL)
+    {
+        alumno a;
+
+        fseek(archi, sizeof(alumno) * (pos - 1), SEEK_SET);
+        fread(&a, sizeof(alumno), 1, archi);
+
+        a = modificarDatosAlumno(a);
+
+        fseek(archi, -sizeof(alumno), SEEK_CUR); // volver atrás para sobrescribir
+        fwrite(&a, sizeof(alumno), 1, archi);
+
+        fclose(archi);
+    }
+}
+
+alumno modificarDatosAlumno(alumno a)
+{
+    printf("\n--- Datos actuales del alumno ---\n");
+    mostrarAlumno(a);
+
+    char control;
+
+    printf("\nModificar nombre y apellido (s/n)? ");
+    getchar(); // limpiar buffer
+    control = getchar();
+    if (control == 's' || control == 'S') {
+        printf("Nuevo nombre y apellido: ");
+        getchar(); // limpiar \n pendiente
+        fgets(a.nya, sizeof(a.nya), stdin);
+        a.nya[strcspn(a.nya, "\n")] = '\0'; // eliminar salto de línea
+    }
+
+    printf("\nModificar edad (%d) (s/n)? ", a.edad);
+    getchar();
+    control = getchar();
+    if (control == 's' || control == 'S') {
+        printf("Nueva edad: ");
+        scanf("%d", &a.edad);
+    }
+
+    printf("\nModificar año que cursa (%d) (s/n)? ", a.anio);
+    getchar();
+    control = getchar();
+    if (control == 's' || control == 'S') {
+        printf("Nuevo año: ");
+        scanf("%d", &a.anio);
+    }
+
+    printf("\n--- Datos modificados ---\n");
+    mostrarAlumno(a);
+
+    return a;
+}
+
+-------------------------------------------------------------------------
+
+void invierteArchivo(char archivoAlumnos[])
+{
+    alumno alu_principio, alu_final;
+    int inicio= 0;
+    int cantidad= cuentaRegistrosArchivoFtell(archivoAlumnos);// calculo cuántos regiatros hay en el archivo
+    int fin= cantidad-1;
+
+    FILE* archi= fopen(archivoAlumnos, "r+b");
+
+    if(archi!=NULL)
+    {
+        while(inicio < fin)   // si inicio y fin se juntaron, o inicio pasó a fin, es porque llego al medio
+        {          // vamos al ppio y leemos
+            fseek(archi, inicio*sizeof(alumno),SEEK_SET);
+
+            fread(&alu_principio, sizeof(alumno), 1, archi);
+
+                  // vamos al final y leemos
+            fseek(archi, fin*sizeof(alumno), SEEK_SET);
+
+            fread(&alu_final, sizeof(alumno), 1, archi);
+
+                  // vamos al ppio y escribimos
+            fseek(archi, inicio*sizeof(alumno),SEEK_SET);
+
+            fwrite(&alu_final, sizeof(alumno), 1, archi);
+
+                  // vamos al final y escribimos
+            fseek(archi, fin*sizeof(alumno), SEEK_SET);
+
+            fwrite(&alu_principio, sizeof(alumno), 1, archi);
+
+            inicio++;
+            fin--;
+        }
+        fclose(archi);
+    }
+}
+
+-------------------------------------------------------------------------
+void mostrarProductoPorPrecio(stCategorias categorias[], int totalCategorias, char condicion) {
+    stProducto productoRef;
+    int inicializado = 0;
+
+    for (int i = 0; i < totalCategorias; i++) {
+        for (int j = 0; j < categorias[i].productosDisponibles; j++) {
+            stProducto actual = categorias[i].productos[j];
+
+            if (!inicializado) {
+                productoRef = actual;
+                inicializado = 1;
+            } else {
+                if ((condicion == 'm' && actual.precio > productoRef.precio) ||
+                    (condicion == 'n' && actual.precio < productoRef.precio)) {
+                    productoRef = actual;
+                }
+            }
+        }
+    }
