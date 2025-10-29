@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1761762562 source:c:\users\pc\desktop\edi3\guias-c\practicarecursividad\main.c
+	<stdio.h>
+	<stdlib.h>
+
